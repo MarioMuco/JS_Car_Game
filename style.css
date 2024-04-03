@@ -1,6 +1,42 @@
 canvas {
+    background-image: url('lot.png');
+    /* Specify the URL of the image */
+    background-size: cover;
+    /* Cover the entire canvas with the background image */
     border: 1px solid #d3d3d3;
-    background-color: #d3d3d3;
     width: 1200px;
     height: 550px;
+}
+
+#container {
+    position: relative;
+    top: -530px;
+    left: 610px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#add_color {
+}
+
+#add_car {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #00b7ff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+
+}
+
+#add_car:hover {
+    background-color: #19878f;
+}
+
+#shpejtesia {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
 }

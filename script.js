@@ -1,8 +1,25 @@
 var makina;
+var shpejtesia;
+var color;
+var newX = 225;
+var newY = 255;
+var starting_angle = 0;
+var keep_angle = 0;
+
+//function add_car(){}
+//fix starting angle
+
+function update_input() {
+    shpejtesia = parseInt(document.getElementById("slider").value);
+    color = document.getElementById("add_color").value;
+    starting_angle = keep_angle * Math.PI / 180;
+    makina = new component(60, 100, color, newX, newY, starting_angle);
+}
 
 function startGame() {
-    makina = new component(60, 100, "black", 225, 225);
+    makina = new component(60, 100, color, newX, newY, starting_angle);
     parking.start();
+    shpejtesia = parseInt(document.getElementById("slider").value);
 }
 
 var parking = {
@@ -40,6 +57,7 @@ function component(width, height, color, x, y, type) {
     this.height = height;
     this.speed = 0;
     this.angle = 0;
+    this.angle = 0;
     this.moveAngle = 0;
     this.x = x;
     this.y = y;
@@ -55,8 +73,8 @@ function component(width, height, color, x, y, type) {
     this.newPos = function () {
         // Calculate the new position
         this.angle += this.moveAngle * Math.PI / 180; // Updates the angle of rotation.
-        var newX = this.x + this.speed * Math.sin(this.angle);
-        var newY = this.y - this.speed * Math.cos(this.angle);
+        newX = this.x + this.speed * Math.sin(this.angle);
+        newY = this.y - this.speed * Math.cos(this.angle);
 
         // Check if the new position is within the boundaries of the parking container
         if (newX - this.width / 2 >= 0 && newX + this.width / 2 <= parking.canvas.width &&
@@ -77,12 +95,14 @@ function updateGameArea() {
     // Checks if arrow keys are pressed and updates move angle and speed accordingly.
     if (parking.keys && parking.keys[37]) {
         makina.moveAngle = -2;
+        keep_angle += makina.moveAngle ;
     }
     if (parking.keys && parking.keys[39]) {
         makina.moveAngle = 2;
+        keep_angle += makina.moveAngle ;
     }
     if (parking.keys && parking.keys[38]) {
-        makina.speed = 5;
+        makina.speed = shpejtesia;
     } else {
         // If up arrow key is not pressed, reset the speed to 0 to prevent movement.
         makina.speed = 0;
