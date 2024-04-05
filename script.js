@@ -1,17 +1,39 @@
 var makina;
 var shpejtesia;
 var color;
-var newX = 225;
-var newY = 255;
+var newX = 225; //fillimi
+var newY = 255; // fillimi
 var starting_angle = 0;
 var keep_angle = 0;
 
-//function add_car(){}
-//fix starting angle
+var backgroundImg = new Image();
+backgroundImg.src = 'city.png';
+
+//pjesa e dukshme e qytetit ne canva 
+var visibleArea = {
+    x: 0,
+    y: 0,
+    width: 1200,
+    height: 550
+};
+
+function drawBackground() {
+    parking.context.drawImage(
+        backgroundImg,
+        visibleArea.x,
+        visibleArea.y,
+        visibleArea.width,
+        visibleArea.height,
+        0,
+        0,
+        parking.canvas.width,
+        parking.canvas.height
+    );
+}
 
 function update_input() {
-    shpejtesia = parseInt(document.getElementById("slider").value);
-    color = document.getElementById("add_color").value;
+    shpejtesia = parseInt(document.getElementById("slider").value);//shpejtesia
+    color = document.getElementById("add_color").value; //ngjyra e makenes
     starting_angle = keep_angle * Math.PI / 180;
     makina = new component(60, 100, color, newX, newY, starting_angle);
 }
@@ -23,35 +45,33 @@ function startGame() {
 }
 
 var parking = {
-    // Defines an object named 'parking'.
     canvas: document.createElement("canvas"),
     start: function () {
         this.canvas.width = 1200;
         this.canvas.height = 550;
         this.context = this.canvas.getContext("2d");
-        document.body.insertBefore(this.canvas, document.body.childNodes[0]); // Inserts the canvas into the document body.
-        this.frameNo = 0; // Initializes the frame number to 0.
-        this.interval = setInterval(updateGameArea, 20); // 'updateGameArea' every 20 milliseconds.
-        window.addEventListener('keydown', function (e) { // Adds an event listener for keydown events.
-            e.preventDefault(); // Prevents the default behavior of the keydown event.
-            parking.keys = (parking.keys || []); // Initializes the 'keys' property of 'parking' object as an empty array if it doesn't exist.
-            parking.keys[e.keyCode] = (e.type == "keydown"); // Updates the value of the 'keys' array based on the pressed key.
+        document.body.insertBefore(this.canvas, document.body.childNodes[0]); // Insert canvas ne html
+        this.frameNo = 0;
+        this.interval = setInterval(updateGameArea, 20); // updatohet cdo 20 milisekonda
+        window.addEventListener('keydown', function (e) { // eventlistner per keydowsn
+            e.preventDefault(); // heq veprimin default te keydown
+            parking.keys = (parking.keys || []);
+            parking.keys[e.keyCode] = (e.type == "keydown");
         })
-        window.addEventListener('keyup', function (e) { // Adds an event listener for keyup events.
-            parking.keys[e.keyCode] = (e.type == "keydown"); // Updates the value of the 'keys' array when a key is released.
+        window.addEventListener('keyup', function (e) { // event listner per keyup
+            parking.keys[e.keyCode] = (e.type == "keydown");
         })
     },
-    stop: function () { // Defines a method named 'stop' for the 'parking' object.
-        clearInterval(this.interval); // Stops the game loop by clearing the interval.
+    stop: function () {
+        clearInterval(this.interval); // ndalon lojen
     },
-    clear: function () { // Defines a method named 'clear' for the 'parking' object.
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height); // Clears the entire canvas.
+    clear: function () { // pastron canvas
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 }
 
 function component(width, height, color, x, y, type) {
-    // Defines a constructor function named 'component' for creating game components.
-    // Initializes properties of the component object.
+    // krijon komponentet e lojes 
     this.type = type;
     this.width = width;
     this.height = height;
@@ -61,60 +81,75 @@ function component(width, height, color, x, y, type) {
     this.moveAngle = 0;
     this.x = x;
     this.y = y;
-    this.update = function () { // Defines a method named 'update' for the component.
-        ctx = parking.context; // Gets the 2D rendering context for the canvas.
-        ctx.save(); // Saves the current state of the rendering context.
-        ctx.translate(this.x, this.y); // Moves the origin of the canvas to the specified position.
-        ctx.rotate(this.angle); // Rotates the canvas around the origin.
-        ctx.fillStyle = color; // Sets the fill color.
-        ctx.fillRect(this.width / -2, this.height / -2, this.width, this.height); // Draws a filled rectangle at the specified position.
-        ctx.restore(); // Restores the most recently saved canvas state.
+    this.update = function () {
+        ctx = parking.context;
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.angle);
+        ctx.fillStyle = color;
+        ctx.fillRect(this.width / -2, this.height / -2, this.width, this.height);
+        ctx.restore();
     }
     this.newPos = function () {
-        // Calculate the new position
-        this.angle += this.moveAngle * Math.PI / 180; // Updates the angle of rotation.
+        // pozicioni i ri i makines
+        this.angle += this.moveAngle * Math.PI / 180; // kendi i makines
         newX = this.x + this.speed * Math.sin(this.angle);
         newY = this.y - this.speed * Math.cos(this.angle);
 
-        // Check if the new position is within the boundaries of the parking container
-        if (newX - this.width / 2 >= 0 && newX + this.width / 2 <= parking.canvas.width &&
-            newY - this.height / 2 >= 0 && newY + this.height / 2 <= parking.canvas.height) {
-            // If within boundaries, update the position
+        // mos dali jashte kufinjve te canvas
+        if (newX - this.width / 2 >= 0 && //cepi i majte i makines brenda 0 cepi i majte i canvas
+            newX + this.width / 2 <= parking.canvas.width && //cepi i djathte te jete brenda canvas se djthte
+            newY - this.height / 2 >= 0 &&  // cepi lart te jete brenda
+            newY + this.height / 2 <= parking.canvas.height) { //cepi poshte te jete brenda
             this.x = newX;
             this.y = newY;
         }
     }
-
 }
 
 function updateGameArea() {
-    // Updates the game area in each frame.
-    parking.clear(); // Clears the canvas.
-    makina.moveAngle = 0; // Resets the move angle of 'makina'.
-    makina.speed = 0; // Resets the speed of 'makina'.
-    // Checks if arrow keys are pressed and updates move angle and speed accordingly.
+    //update loja ne cdo frame
+    parking.clear();
+
+    // camera leviz kur arrihet ne qender te canvas
+    visibleArea.x = Math.max(0, newX - (parking.canvas.width / 2));
+    visibleArea.y = Math.max(0, newY - (parking.canvas.height / 2));
+
+    // visible area te jete brenda city.png
+     if (visibleArea.x + parking.canvas.width > backgroundImg.width) {
+        visibleArea.x = backgroundImg.width - parking.canvas.width;
+    }
+    if (visibleArea.y + parking.canvas.height > backgroundImg.height) {
+        visibleArea.y = backgroundImg.height - parking.canvas.height;
+    }
+
+    drawBackground();
+
+    makina.moveAngle = 0; 
+    makina.speed = 0; 
+    // shikon nese shigjetat jane shtypur
     if (parking.keys && parking.keys[37]) {
         makina.moveAngle = -2;
-        keep_angle += makina.moveAngle ;
+        keep_angle += makina.moveAngle;
     }
     if (parking.keys && parking.keys[39]) {
         makina.moveAngle = 2;
-        keep_angle += makina.moveAngle ;
+        keep_angle += makina.moveAngle;
     }
     if (parking.keys && parking.keys[38]) {
         makina.speed = shpejtesia;
     } else {
-        // If up arrow key is not pressed, reset the speed to 0 to prevent movement.
+        //nuk ecen nese nuk shtypet asnje buton
         makina.speed = 0;
     }
     if (parking.keys && parking.keys[40]) {
         makina.speed = -2;
     }
 
-    // If the car is moving (speed is non-zero), allow rotation.
+    // rrotullim vetem nese po ecet
     if (makina.speed !== 0) {
-        makina.newPos(); // Updates the position of 'makina'.
+        makina.newPos(); 
     }
 
-    makina.update(); // Updates the display of 'makina'.
+    makina.update(); 
 }
