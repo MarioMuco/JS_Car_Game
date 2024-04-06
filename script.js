@@ -112,16 +112,32 @@ function updateGameArea() {
     parking.clear();
 
     // camera leviz kur arrihet ne qender te canvas
-    visibleArea.x = Math.max(0, newX - (parking.canvas.width / 2));
-    visibleArea.y = Math.max(0, newY - (parking.canvas.height / 2));
+    visibleArea.x = newX - (parking.canvas.width / 2);
+    visibleArea.y = newY - (parking.canvas.height / 2);
 
-    // visible area te jete brenda city.png
-     if (visibleArea.x + parking.canvas.width > backgroundImg.width) {
-        visibleArea.x = backgroundImg.width - parking.canvas.width;
+/*
+    // Define a buffer around the car's position to expand the visible area
+    var bufferX = 100; // Adjust as needed
+    var bufferY = 100; // Adjust as needed
+     // Expand the visible area using the buffer
+     visibleArea.x -= bufferX;
+     visibleArea.y -= bufferY;
+     visibleArea.width += 2 * bufferX;
+     visibleArea.height += 2 * bufferY;
+     // Ensure that the visible area stays within the bounds of the city image
+    if (visibleArea.x < 0) {
+        visibleArea.x = 0;
     }
-    if (visibleArea.y + parking.canvas.height > backgroundImg.height) {
-        visibleArea.y = backgroundImg.height - parking.canvas.height;
+    if (visibleArea.y < 0) {
+        visibleArea.y = 0;
     }
+    if (visibleArea.x + visibleArea.width > backgroundImg.width) {
+        visibleArea.x = backgroundImg.width - visibleArea.width;
+    }
+    if (visibleArea.y + visibleArea.height > backgroundImg.height) {
+        visibleArea.y = backgroundImg.height - visibleArea.height;
+    }
+   */
 
     drawBackground();
 
